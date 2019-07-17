@@ -1,9 +1,5 @@
 /*
  * CANFD-filter.h
- *
- *  Created on: Jul 17, 2019
- *      Author: Chuan Li (chuan.li@akka-na.com)
- *		Copyright: Proprietary
  */
 
 #ifndef CANFD_FILTERS_H__
