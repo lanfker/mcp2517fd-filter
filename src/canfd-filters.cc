@@ -92,14 +92,14 @@ KS CANFDFilterGenerator::gen_single_pair (unordered_set<int>& canids, int budget
 					common.reset(i);
 				}
 			}
-			ull key = state.to_ullong();
+			ull key = (state.to_ullong() << 32) + common.to_ullong();
 			set<int> _canids (d.second.canids.begin(), d.second.canids.end());
 			_canids.insert (id);
 			if (diff <= budget && dp.count(key) && dp[key].canids.size() < _canids.size()) {
 				dp[key].state = state;
 				dp[key].common = common;
 				dp[key].diff_cnt = diff;
-				dp[key].canids.clear();
+				//dp[key].canids.clear();
 				dp[key].canids.insert(_canids.begin(), _canids.end());
 			}
 			else if (diff <= budget ){
@@ -111,6 +111,7 @@ KS CANFDFilterGenerator::gen_single_pair (unordered_set<int>& canids, int budget
 				dp[key] = _ks;
 			}
 
+			/*
 			for (auto& item : dp) {
 			if (item.first == key) continue;
 			if ((item.first | key) == key) {
@@ -127,9 +128,11 @@ KS CANFDFilterGenerator::gen_single_pair (unordered_set<int>& canids, int budget
 				}
 			}
 		}
+			*/
 
 
 			if (diff<=budget && diff >= budget_min && dp[key].canids.size() > candidate_size) {
+				candidate_size = dp[key].canids.size();
 				ks = dp[key];
 			}
 		}
@@ -156,7 +159,7 @@ string CANFDFilterGenerator::gen_bash_file_content (vector<KS> &knapsacks, int i
 	*/
 
 
-	oss<<"echo 0x03020100> /sys/class/net/can"<<ifindex<<"/c"<<ifindex<<"fltcon0\n"
+	oss<<"\necho 0x03020100 > /sys/class/net/can"<<ifindex<<"/c"<<ifindex<<"fltcon0\n"
 			<< "echo 0x07060504 > /sys/class/net/can"<<ifindex<<"/c"<<ifindex<<"fltcon1\n"
 			<< "echo 0x0b0a0908 > /sys/class/net/can"<<ifindex<<"/c"<<ifindex<<"fltcon2\n"
 			<< "echo 0x0f0e0d0c > /sys/class/net/can"<<ifindex<<"/c"<<ifindex<<"fltcon3\n"
